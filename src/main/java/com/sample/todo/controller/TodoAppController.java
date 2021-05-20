@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * ブラウザからのリクエストはここにくる
@@ -40,6 +41,12 @@ public class TodoAppController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     String register(@ModelAttribute TodoApp todoApp, Model model) {
         service.register(todoApp.getTitle(), todoApp.getDetail());
+        return "redirect:index";// 登録したらindexに移る
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    String delete(@RequestParam int todoId, Model model) {
+        service.delete(todoId);
         return "redirect:index";// 登録したらindexに移る
     }
 }

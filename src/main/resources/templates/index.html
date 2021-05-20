@@ -27,6 +27,12 @@
                 <td class="todo-id" th:text="${result['todoId']}"></td>
                 <td class="title" th:text="${result['title']}"></td>
                 <td class="detail" th:text="${result['detail']}"></td>
+                <td>
+                    <form method="POST" th:action="@{/delete}">
+                        <input type="hidden" name="todoId" th:value="${result['todoId']}"/>
+                        <input type="submit" value="Delete"/>
+                    </form>
+                </td>
             </tr>
         </tbody>
     </table>
