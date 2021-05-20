@@ -49,4 +49,16 @@ public class TodoAppController {
         service.delete(todoId);
         return "redirect:index";// 登録したらindexに移る
     }
+
+    @RequestMapping(value = "/edit", method = RequestMethod.GET)
+    String edit(@RequestParam int todoId, Model model) {
+        service.edit(todoId);
+        return "edit";
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    String update(@RequestParam int todoId, Model model) {
+        service.update(todoId);
+        return "redirect:index";// 登録したらindexに移る
+    }
 }

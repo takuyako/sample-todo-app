@@ -34,4 +34,12 @@ public class TodoAppService {
     public void delete(int todoId) {
         dao.delete(todoId);
     }
+
+    public TodoApp edit(int todoId) {
+        return dao.edit(todoId);
+    }
+
+    public void update(int todoId) {
+        dao.update(todoId);
+    }
 }
