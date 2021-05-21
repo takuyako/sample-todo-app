@@ -26,9 +26,10 @@ public class TodoAppService {
         return dao.getTodoAppList();
     }
 
-    public void register(String title, String detail) {
+    public void register(TodoApp todoApp) {
         int nextId = dao.getNextId();
-        dao.insert(nextId, title, detail);
+        todoApp.setTodoId(nextId);
+        dao.insert(todoApp);
     }
 
     public void delete(int todoId) {
@@ -39,7 +40,7 @@ public class TodoAppService {
         return dao.edit(todoId);
     }
 
-    public void update(int todoId) {
-        dao.update(todoId);
+    public void update(TodoApp todoApp) {
+        dao.update(todoApp);
     }
 }

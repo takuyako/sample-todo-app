@@ -6,8 +6,10 @@ import com.sample.todo.entity.TodoApp;
 import com.sample.todo.entity.TodoAppRowMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -32,12 +34,9 @@ public class TodoAppDao {
         return maxTodoId;
     }
 
-    public void insert(int todoId, String title, String detail) {
-        MapSqlParameterSource paramMap = new MapSqlParameterSource();
-        paramMap.addValue("todoId", todoId);
-        paramMap.addValue("title", title);
-        paramMap.addValue("detail", detail);
-        jdbcTemplate.update("INSERT INTO TODO_APP VALUES(:todoId, :title, :detail)", paramMap);
+    public void insert(TodoApp todoApp) {
+        SqlParameterSource paramMap = new BeanPropertySqlParameterSource(todoApp);
+        jdbcTemplate.update("INSERT INTO TODO_APP VALUES(:todoId, :category, :title, :detail)", paramMap);
     }
 
     public void delete(int todoId) {
@@ -49,14 +48,12 @@ public class TodoAppDao {
     public TodoApp edit(int todoId) {
         MapSqlParameterSource paramMap = new MapSqlParameterSource();
         paramMap.addValue("todoId", todoId);
-        TodoApp todoApp = jdbcTemplate.queryForObject("SELECT * FROM TODO_APP WHERE TODO_ID = :todoId;" ,new MapSqlParameterSource(null),
-        new TodoAppRowMapper());
+        TodoApp todoApp = jdbcTemplate.queryForObject("SELECT * FROM TODO_APP WHERE TODO_ID = :todoId;", paramMap, new TodoAppRowMapper());
         return todoApp;
     }
 
-    public void update(int todoId) {
-        MapSqlParameterSource paramMap = new MapSqlParameterSource();
-        paramMap.addValue("todoId", todoId);
-        jdbcTemplate.update("DELETE FROM TODO_APP WHERE TODO_ID = :todoId;" ,paramMap);
+    public void update(TodoApp todoApp) {
+        SqlParameterSource paramMap = new BeanPropertySqlParameterSource(todoApp);
+        jdbcTemplate.update("UPDATE TODO_APP SET CATEGORY = :category, TITLE = :title, DETAIL = :detail WHERE TODO_ID = :todoId;", paramMap);
     }
 }

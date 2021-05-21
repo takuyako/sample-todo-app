@@ -8,6 +8,8 @@ import com.sample.todo.service.TodoAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,14 +36,17 @@ public class TodoAppController {
     }
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
-    String add(Model model) {
+    String add(@ModelAttribute TodoApp todoApp, Model model) {
         return "detail";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    String register(@ModelAttribute TodoApp todoApp, Model model) {
-        service.register(todoApp.getTitle(), todoApp.getDetail());
-        return "redirect:index";// 登録したらindexに移る
+    String register(@Validated @ModelAttribute TodoApp todoApp, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "detail";// 登録失敗したらdetailに戻る
+        }
+        service.register(todoApp);
+        return "redirect:index";// 登録成功したらindexに移る
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
@@ -52,13 +57,17 @@ public class TodoAppController {
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     String edit(@RequestParam int todoId, Model model) {
-        service.edit(todoId);
+        TodoApp todoApp = service.edit(todoId);
+        model.addAttribute("todoApp", todoApp);
         return "edit";
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    String update(@RequestParam int todoId, Model model) {
-        service.update(todoId);
-        return "redirect:index";// 登録したらindexに移る
+    String update(@Validated @ModelAttribute TodoApp todoApp, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "edit";// 更新失敗したらeditに戻る
+        }
+        service.update(todoApp);
+        return "redirect:index";// 更新成功したらindexに移る
     }
 }
